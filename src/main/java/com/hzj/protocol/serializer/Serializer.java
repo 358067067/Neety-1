@@ -1,4 +1,4 @@
-package com.hzj.codec;
+package com.hzj.protocol.serializer;
 
 public interface Serializer {
 

@@ -1,11 +1,11 @@
-package com.hzj.codec;
+package com.hzj.protocol.serializer;
 
 import com.alibaba.fastjson.JSON;
 
 public enum FastJsonSerializer implements Serializer{
 
     //单例实现
-    x;
+    X;
 
     @Override
     public byte[] encode(Object target) {

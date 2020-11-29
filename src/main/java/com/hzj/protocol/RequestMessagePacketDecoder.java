@@ -1,12 +1,9 @@
-package com.hzj.codec;
+package com.hzj.protocol;
 
 import com.google.common.collect.Maps;
-import com.hzj.type.MessageType;
-import com.hzj.type.RequestMessagePacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import io.netty.util.CharsetUtil;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -24,7 +21,7 @@ public class RequestMessagePacketDecoder extends ByteToMessageDecoder {
         packet.setVersion(in.readInt());
         // 流水号
         int serialNumberLength = in.readInt();
-        packet.setSerialNumber(in.readCharSequence(serialNumberLength, CharsetUtil.UTF_8).toString());
+        packet.setSerialNumber(in.readCharSequence(serialNumberLength, ProtocolConstant.UTF_8).toString());
         // 消息类型
         byte messageTypeByte = in.readByte();
         packet.setMessageType(MessageType.fromValue(messageTypeByte));
@@ -35,25 +32,25 @@ public class RequestMessagePacketDecoder extends ByteToMessageDecoder {
         if (attachmentSize > 0) {
             for (int i = 0; i < attachmentSize; i++) {
                 int keyLength = in.readInt();
-                String key = in.readCharSequence(keyLength, CharsetUtil.UTF_8).toString();
+                String key = in.readCharSequence(keyLength, ProtocolConstant.UTF_8).toString();
                 int valueLength = in.readInt();
-                String value = in.readCharSequence(valueLength, CharsetUtil.UTF_8).toString();
+                String value = in.readCharSequence(valueLength, ProtocolConstant.UTF_8).toString();
                 attachments.put(key, value);
             }
         }
         // 接口全类名
         int interfaceNameLength = in.readInt();
-        packet.setInterfaceName(in.readCharSequence(interfaceNameLength, CharsetUtil.UTF_8).toString());
+        packet.setInterfaceName(in.readCharSequence(interfaceNameLength, ProtocolConstant.UTF_8).toString());
         // 方法名
         int methodNameLength = in.readInt();
-        packet.setMethodName(in.readCharSequence(methodNameLength, CharsetUtil.UTF_8).toString());
+        packet.setMethodName(in.readCharSequence(methodNameLength, ProtocolConstant.UTF_8).toString());
         // 方法参数签名
         int methodArgumentSignatureArrayLength = in.readInt();
         if (methodArgumentSignatureArrayLength > 0) {
             String[] methodArgumentSignatures = new String[methodArgumentSignatureArrayLength];
             for (int i = 0; i < methodArgumentSignatureArrayLength; i++) {
                 int methodArgumentSignatureLength = in.readInt();
-                methodArgumentSignatures[i] = in.readCharSequence(methodArgumentSignatureLength, CharsetUtil.UTF_8).toString();
+                methodArgumentSignatures[i] = in.readCharSequence(methodArgumentSignatureLength, ProtocolConstant.UTF_8).toString();
             }
             packet.setMethodArgumentSignatures(methodArgumentSignatures);
         }

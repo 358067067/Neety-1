@@ -1,4 +1,4 @@
-package com.hzj.type;
+package com.hzj.protocol;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
