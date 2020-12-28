@@ -62,7 +62,7 @@ public class TestProtocolClient {
             packet.setVersion(ProtocolConstant.VERSION);
             packet.setSerialNumber(SerialNumberUtils.X.generateSerialNumber());
             packet.setMessageType(MessageType.REQUEST);
-            packet.setInterfaceName("com.hzj.service.HelloService");
+            packet.setInterfaceName("com.hzj.contract.HelloService");
             packet.setMethodName("sayHello");
             packet.setMethodArgumentSignatures(new String[]{"java.lang.String"});
             packet.setMethodArguments(new Object[]{"doge"});
