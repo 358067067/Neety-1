@@ -33,11 +33,11 @@ public class ClientApplication {
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 protected void initChannel(SocketChannel ch) throws Exception {
-//                    ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(1024, 0, 4, 0, 4));
-//                    ch.pipeline().addLast(new LengthFieldPrepender(4));
-//                    ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
-//                    ch.pipeline().addLast(new RequestMessagePacketEncoder(FastJsonSerializer.X));
-//                    ch.pipeline().addLast(new ResponseMessagePacketDecoder());
+                    ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(1024, 0, 4, 0, 4));
+                    ch.pipeline().addLast(new LengthFieldPrepender(4));
+                    ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
+                    ch.pipeline().addLast(new RequestMessagePacketEncoder(FastJsonSerializer.X));
+                    ch.pipeline().addLast(new ResponseMessagePacketDecoder());
                     ch.pipeline().addLast(new SimpleChannelInboundHandler<ResponseMessagePacket>() {
                         @Override
                         protected void channelRead0(ChannelHandlerContext ctx, ResponseMessagePacket packet) throws Exception {
@@ -48,7 +48,7 @@ public class ClientApplication {
                                 byte[] bytes = new byte[readableByteLength];
                                 byteBuf.readBytes(bytes);
                                 targetPayload = FastJsonSerializer.X.decode(bytes, String.class);
-                                byteBuf.release();
+                                 byteBuf.release();
                             }
                             packet.setPayload(targetPayload);
                             log.info("接受到来自服务端的响应消息,消息内容{}", JSON.toJSONString(packet));

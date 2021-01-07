@@ -1,7 +1,7 @@
 package com.hzj.server;
 
 import com.hzj.protocol.RequestMessagePacketDecoder;
-import com.hzj.protocol.RequestMessagePacketEncoder;
+import com.hzj.protocol.ResponseMessagePacketEncoder;
 import com.hzj.protocol.serializer.FastJsonSerializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -48,7 +48,7 @@ public class ServerApplication implements CommandLineRunner {
                             ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(1024, 0, 4, 0, 4));
                             ch.pipeline().addLast(new LengthFieldPrepender(4));
                             ch.pipeline().addLast(new RequestMessagePacketDecoder());
-                            ch.pipeline().addLast(new RequestMessagePacketEncoder(FastJsonSerializer.X));
+                            ch.pipeline().addLast(new ResponseMessagePacketEncoder(FastJsonSerializer.X));
                             ch.pipeline().addLast(serverHandler);
                         }
                     });
