@@ -5,11 +5,14 @@ import com.google.common.collect.Lists;
 import com.hzj.protocol.MessageType;
 import com.hzj.protocol.RequestMessagePacket;
 import com.hzj.protocol.ResponseMessagePacket;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
@@ -21,6 +24,7 @@ import java.util.Optional;
  */
 @Component
 @Slf4j
+@Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ServerHandler extends SimpleChannelInboundHandler<RequestMessagePacket> {
 
     @Autowired
@@ -46,7 +50,8 @@ public class ServerHandler extends SimpleChannelInboundHandler<RequestMessagePac
         log.info("查找目标实现方法成功,目标类{},宿主类{},宿主方法{}",
                 output.getTargetClass().getCanonicalName(),
                 output.getTargetUserClass().getCanonicalName(),
-                output.getTargetMethod().getName());
+                output.getTargetMethod().getName()
+        );
         Method targetMethod = output.getTargetMethod();
         ArgumentConvertInput convertInput = new ArgumentConvertInput();
         convertInput.setArguments(input.getMethodArgumentArraySize() > 0 ? Lists.newArrayList(methodArguments) : Lists.newArrayList());
@@ -56,6 +61,13 @@ public class ServerHandler extends SimpleChannelInboundHandler<RequestMessagePac
         ReflectionUtils.makeAccessible(targetMethod);
         // 反射调用
         Object result = targetMethod.invoke(output.getTarget(), convertOutput.getArguments());
+        ResponseMessagePacket response = applyResponseMessagePacket(packet);
+        response.setPayload(result);
+        log.info("服务端输出:{}", JSON.toJSONString(response));
+        ctx.writeAndFlush(response);
+    }
+
+    public static ResponseMessagePacket applyResponseMessagePacket(RequestMessagePacket packet) {
         ResponseMessagePacket response = new ResponseMessagePacket();
         response.setMagicNumber(packet.getMagicNumber());
         response.setVersion(packet.getVersion());
@@ -64,8 +76,6 @@ public class ServerHandler extends SimpleChannelInboundHandler<RequestMessagePac
         response.setMessageType(MessageType.RESPONSE);
         response.setErrorCode(200L);
         response.setMessage("Success");
-        response.setPayload(JSON.toJSONString(result));
-        log.info("服务端输出:{}", JSON.toJSONString(response));
-        ctx.writeAndFlush(response);
+        return response;
     }
 }
