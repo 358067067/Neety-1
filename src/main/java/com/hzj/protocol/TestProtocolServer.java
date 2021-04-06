@@ -2,6 +2,7 @@ package com.hzj.protocol;
 
 import com.alibaba.fastjson.JSON;
 import com.hzj.protocol.serializer.FastJsonSerializer;
+import com.hzj.server.ServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
