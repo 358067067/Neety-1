@@ -62,4 +62,14 @@ public class ServerHandler extends SimpleChannelInboundHandler<RequestMessagePac
         log.info("服务端输出:{}", JSON.toJSONString(response));
         ctx.writeAndFlush(response);
     }
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        super.channelActive(ctx);
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        ctx.channel().close();
+    }
 }
